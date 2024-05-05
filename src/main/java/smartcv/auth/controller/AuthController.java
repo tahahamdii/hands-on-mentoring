@@ -18,8 +18,13 @@ import smartcv.auth.security.JwtUtil;
 import smartcv.auth.service.UserService;
 import smartcv.auth.serviceImpl.CustomUserDetailsService;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 @Controller
 @RequestMapping("/rest/auth")
+@CrossOrigin("*")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -36,6 +41,7 @@ public class AuthController {
 
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @CrossOrigin("*")
     public ResponseEntity login(@RequestBody LoginReq loginReq) {
 
         try {
@@ -44,6 +50,7 @@ public class AuthController {
             String email = authentication.getName();
             User user = new User(email, "");
             String token = jwtUtil.createToken(user);
+            System.out.println("token generated: "+ token);
             LoginRes loginRes = new LoginRes(email, token);
 
             return ResponseEntity.ok(loginRes);
@@ -52,25 +59,28 @@ public class AuthController {
             ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, "Invalid username or password");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (Exception e) {
+            System.out.println(e);
             ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
     @PostMapping("/register")
+    @CrossOrigin("*")
     public ResponseEntity registerUser(@RequestBody User user) {
         try {
-        userDetailsService.createUser(user);
+            user.setRoles(List.of("USER"));
+            userDetailsService.createUser(user);
 
-       // String token = jwtUtil.createToken(user);
+            // String token = jwtUtil.createToken(user);
 
-        //LoginRes loginRes = new LoginRes(user.getEmail());
-        return (ResponseEntity) ResponseEntity.status(HttpStatus.CREATED);
-             } catch (IllegalArgumentException e) {
+            //LoginRes loginRes = new LoginRes(user.getEmail());
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (IllegalArgumentException e) {
             ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+            return ResponseEntity.badRequest().body(errorResponse);
         } catch (Exception e) {
-            ErrorRes errorResponse = new ErrorRes(HttpStatus.INTERNAL_SERVER_ERROR, "Une erreur s'est produite lors de la création de l'utilisateur.");
+            ErrorRes errorResponse = new ErrorRes(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while creating the user.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
 
