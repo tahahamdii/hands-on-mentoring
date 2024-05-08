@@ -10,14 +10,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import smartcv.auth.model.ErrorRes;
-import smartcv.auth.model.LoginReq;
-import smartcv.auth.model.LoginRes;
-import smartcv.auth.model.User;
+import smartcv.auth.model.*;
 import smartcv.auth.security.JwtUtil;
 import smartcv.auth.service.UserService;
 import smartcv.auth.serviceImpl.CustomUserDetailsService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +24,8 @@ import java.util.List;
 @RequestMapping("/rest/auth")
 @CrossOrigin("*")
 public class AuthController {
+
+    private EmailRequest  emailRequest;
 
     private final AuthenticationManager authenticationManager;
     @Autowired
@@ -40,17 +40,20 @@ public class AuthController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/C", method = RequestMethod.POST)
     @CrossOrigin("*")
     public ResponseEntity login(@RequestBody LoginReq loginReq) {
+
 
         try {
             Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
             String email = authentication.getName();
+
+
             User user = new User(email, "");
             String token = jwtUtil.createToken(user);
-            System.out.println("token generated: "+ token);
+            System.out.println("token generated: " + token);
             LoginRes loginRes = new LoginRes(email, token);
 
             return ResponseEntity.ok(loginRes);
@@ -69,7 +72,6 @@ public class AuthController {
     @CrossOrigin("*")
     public ResponseEntity registerUser(@RequestBody User user) {
         try {
-            user.setRoles(List.of("USER"));
             userDetailsService.createUser(user);
 
             // String token = jwtUtil.createToken(user);
@@ -85,4 +87,43 @@ public class AuthController {
         }
 
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<User>> getUser(@PathVariable Long userId) {
+        User user = userDetailsService.getUserById(userId);
+        List<User> userList = new ArrayList<>();
+        if (user != null) {
+            userList.add(user);
+            return new ResponseEntity<>(userList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    @PostMapping("/user/role")
+    public ResponseEntity<UserRoleResponse> getUserRoleByEmail(@RequestBody EmailRequest emailRequest) {
+        String email = emailRequest.getEmail();
+        try {
+            System.out.println("Received request to get user role for email: " + email);
+
+            String role = userDetailsService.getUserRoleByEmail(email);
+            if (role != null) {
+                System.out.println("User role found: " + role);
+                UserRoleResponse response = new UserRoleResponse(role);
+                return ResponseEntity.ok(response);
+            } else {
+                System.out.println("User role not found for email: " + email);
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            System.err.println("An error occurred while fetching user role for email: " + email);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+
+
 }

@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginRes {
     private String email;
-    private String token;}
+    private String token;
+}

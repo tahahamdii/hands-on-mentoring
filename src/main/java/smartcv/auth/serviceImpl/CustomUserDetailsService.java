@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 org.springframework.security.core.userdetails.User.builder()
                         .username(user.getEmail())
                         .password(user.getPassword())
-                        .roles(user.getRoles().toArray(new String[0]))
+                        .roles(user.getRole())
                         .build();
         return userDetails;
     }
@@ -42,4 +42,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         userRepository.save(user);
     }
+
+    public User getUserById(Long id){
+        return userRepository.findById(id).orElse(null);
+    }
+    public String getUserRoleByEmail(String email) {
+        User user = userRepository.findByEmail(email); // Assuming userRepository is available
+        if (user != null) {
+            return user.getRole(); // Assuming the User model has a method to get the role
+        } else {
+            return null;
+        }
+    }
+
 }

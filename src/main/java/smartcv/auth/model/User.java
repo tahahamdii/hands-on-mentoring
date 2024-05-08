@@ -3,9 +3,7 @@ package smartcv.auth.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Setter
+@Getter
 @Table(name = "app_user")
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,13 +23,8 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
-    private Date date_birthday;
-    private String address;
-    private String user_abstract;
-    private String mobile;
-    private String linkedin_link;
-    private String other_link;
-    private List<String> roles;
+
+    private String role;
 
 
     public User(String email, String password) {
