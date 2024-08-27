@@ -48,4 +48,21 @@ public class ReservationService {
 
         return null;  // Return null if user or menu is not found
     }
+
+    public boolean cancelReservation(int reservationId) {
+        Optional<Reservation> reservationOpt = reservationRepository.findById(reservationId);
+
+        if (reservationOpt.isPresent()) {
+            Reservation reservation = reservationOpt.get();
+
+            // Check if reservation is not already canceled and if current date is before the cancellation deadline
+            if (!reservation.isCancelled() && new Date().before(reservation.getCancellationDeadline())) {
+                reservation.setCancelled(true);
+                reservationRepository.save(reservation);
+                return true;
+            }
+        }
+
+        return false; // Reservation not found or cannot be canceled
+    }
 }
