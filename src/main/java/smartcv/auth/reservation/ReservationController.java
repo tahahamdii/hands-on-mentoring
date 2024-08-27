@@ -7,8 +7,7 @@ import smartcv.auth.serviceImpl.ReservationService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -52,8 +51,30 @@ public class ReservationController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable long userId) {
-        List<Reservation> reservations = reservationService.getReservationsByUserId(userId);
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<Map<String, Object>> getReservationsByUserId(@PathVariable long userId) {
+        Optional<List<Reservation>> reservationsOpt = Optional.ofNullable(reservationService.getReservationsByUserId(userId));
+
+        if (reservationsOpt.isPresent()) {
+            List<Reservation> reservations = reservationsOpt.get();
+            List<Map<String, Object>> reservationList = new ArrayList<>();
+
+            for (Reservation reservation : reservations) {
+                Map<String, Object> reservationData = new HashMap<>();
+                reservationData.put("id", reservation.getId());
+                reservationData.put("reservationDate", reservation.getReservationDate());
+                reservationData.put("cancellationDeadline", reservation.getCancellationDeadline());
+                reservationData.put("isCancelled", reservation.isCancelled());
+                reservationData.put("menu", reservation.getMenu().getId());  // Return only menu ID or other necessary fields
+
+                reservationList.add(reservationData);
+            }
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("reservations", reservationList);
+
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
