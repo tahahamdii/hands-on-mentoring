@@ -8,6 +8,7 @@ import smartcv.auth.serviceImpl.ReservationService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -76,5 +77,25 @@ public class ReservationController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Map<String, Object>>> getAllReservations() {
+        List<Reservation> reservations = reservationService.getAllReservations();
+
+        List<Map<String, Object>> response = reservations.stream().map(reservation -> {
+            Map<String, Object> reservationData = new HashMap<>();
+            reservationData.put("id", reservation.getId());
+            reservationData.put("reservationDate", reservation.getReservationDate());
+            reservationData.put("cancellationDeadline", reservation.getCancellationDeadline());
+            reservationData.put("isCancelled", reservation.isCancelled());
+            reservationData.put("menu", reservation.getMenu().getId()); // Return only menu ID
+            reservationData.put("user", reservation.getUser().getId()); // Return only user ID
+
+            return reservationData;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -71,4 +71,9 @@ public class ReservationService {
     public List<Reservation> getReservationsByUserId(long userId) {
         return reservationRepository.findByUserId(userId);
     }
+
+    public List<Reservation> getAllReservations() {
+        return reservationRepository.findAll();
+    }
+
 }
