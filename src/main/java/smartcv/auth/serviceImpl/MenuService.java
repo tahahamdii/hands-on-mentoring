@@ -6,6 +6,7 @@ import smartcv.auth.menu.Menu;
 import smartcv.auth.menu.MenuRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class MenuService {
@@ -24,5 +25,18 @@ public class MenuService {
 
     public Menu addMenu(Menu menu) {
         return menuRepository.save(menu);
+    }
+
+    public Menu updateMenu(int id, Menu menuDetails) {
+        return menuRepository.findById(id).map(menu -> {
+            menu.setMenuDate(menuDetails.getMenuDate());
+            menu.setEntree(menuDetails.getEntree());
+            menu.setMainCourse(menuDetails.getMainCourse());
+            menu.setGarnish(menuDetails.getGarnish());
+            menu.setDessert(menuDetails.getDessert());
+            menu.setSandwiches(menuDetails.getSandwiches());
+            // If needed, you can update the user or other fields
+            return menuRepository.save(menu);
+        }).orElseThrow(() -> new NoSuchElementException("Menu not found with id " + id));
     }
 }

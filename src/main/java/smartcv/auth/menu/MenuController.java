@@ -45,4 +45,10 @@ public class MenuController {
         Menu addedMenu = menuService.addMenu(menu);
         return ResponseEntity.ok(addedMenu);
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Menu> updateMenu(@PathVariable int id, @RequestBody Menu menuDetails) {
+        Menu updatedMenu = menuService.updateMenu(id, menuDetails);
+        return ResponseEntity.ok(updatedMenu);
+    }
 }
