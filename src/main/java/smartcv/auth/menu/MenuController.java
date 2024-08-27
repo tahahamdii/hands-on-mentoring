@@ -1,5 +1,6 @@
 package smartcv.auth.menu;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import smartcv.auth.serviceImpl.MenuService;
@@ -50,5 +51,16 @@ public class MenuController {
     public ResponseEntity<Menu> updateMenu(@PathVariable int id, @RequestBody Menu menuDetails) {
         Menu updatedMenu = menuService.updateMenu(id, menuDetails);
         return ResponseEntity.ok(updatedMenu);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteMenu(@PathVariable int id) {
+        boolean isDeleted = menuService.deleteMenu(id);
+
+        if (isDeleted) {
+            return ResponseEntity.ok("Menu deleted successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Menu not found");
+        }
     }
 }

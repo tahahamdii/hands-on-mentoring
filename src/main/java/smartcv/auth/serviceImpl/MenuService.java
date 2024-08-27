@@ -1,5 +1,6 @@
 package smartcv.auth.serviceImpl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smartcv.auth.menu.Menu;
@@ -38,5 +39,16 @@ public class MenuService {
             // If needed, you can update the user or other fields
             return menuRepository.save(menu);
         }).orElseThrow(() -> new NoSuchElementException("Menu not found with id " + id));
+    }
+
+
+    @Transactional
+    public boolean deleteMenu(int menuId) {
+        if (menuRepository.existsById(menuId)) {
+            menuRepository.deleteById(menuId);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
