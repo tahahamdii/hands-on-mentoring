@@ -38,4 +38,15 @@ public class ReservationController {
             return ResponseEntity.badRequest().body(null);  // Return 400 if date parsing fails
         }
     }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<Void> cancelReservation(@RequestParam int reservationId) {
+        boolean success = reservationService.cancelReservation(reservationId);
+
+        if (success) {
+            return ResponseEntity.ok().build(); // Return 200 OK if cancellation was successful
+        } else {
+            return ResponseEntity.badRequest().build(); // Return 400 Bad Request if reservation cannot be canceled
+        }
+    }
 }
