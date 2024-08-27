@@ -4,6 +4,8 @@ package smartcv.auth.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import smartcv.auth.menu.Menu;
+import smartcv.auth.reservation.Reservation;
 
 import java.util.Date;
 import java.util.List;
@@ -26,6 +28,11 @@ public class User {
 
     private String role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Reservation> reservations;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Menu> menus;
 
     public User(String email, String password) {
         this.email = email;
