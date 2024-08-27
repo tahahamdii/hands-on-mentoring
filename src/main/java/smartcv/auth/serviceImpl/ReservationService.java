@@ -1,2 +1,51 @@
-package smartcv.auth.serviceImpl;public class ReservationService {
+package smartcv.auth.serviceImpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import smartcv.auth.menu.Menu;
+import smartcv.auth.menu.MenuRepository;
+import smartcv.auth.model.User;
+import smartcv.auth.repository.UserRepository;
+import smartcv.auth.reservation.Reservation;
+import smartcv.auth.reservation.ReservationRepository;
+
+import java.util.Date;
+import java.util.Optional;
+
+@Service
+public class ReservationService {
+
+    @Autowired
+    private ReservationRepository reservationRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
+
+    public Reservation makeReservation(long userId, int menuId, Date reservationDate) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Menu> menuOpt = menuRepository.findById(menuId);
+
+        if (userOpt.isPresent() && menuOpt.isPresent()) {
+            User user = userOpt.get();
+            Menu menu = menuOpt.get();
+
+            Reservation reservation = new Reservation();
+            reservation.setUser(user);
+            reservation.setMenu(menu);
+            reservation.setReservationDate(reservationDate);
+
+            // Set cancellation deadline to one day before the reservation date
+            Date cancellationDeadline = new Date(reservationDate.getTime() - (24 * 60 * 60 * 1000));
+            reservation.setCancellationDeadline(cancellationDeadline);
+
+            reservation.setCancelled(false);
+
+            return reservationRepository.save(reservation);
+        }
+
+        return null;  // Return null if user or menu is not found
+    }
 }
