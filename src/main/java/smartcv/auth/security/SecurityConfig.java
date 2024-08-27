@@ -53,6 +53,7 @@ public class SecurityConfig  {
                         .requestMatchers("/rest/auth/**").permitAll()
                         .requestMatchers("/h2-console/login.do**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/api/reservations/make").permitAll() // Allow access to reservation endpoint
 
 
                         .anyRequest().authenticated()
