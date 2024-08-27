@@ -8,6 +8,7 @@ import smartcv.auth.serviceImpl.ReservationService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -48,5 +49,11 @@ public class ReservationController {
         } else {
             return ResponseEntity.badRequest().build(); // Return 400 Bad Request if reservation cannot be canceled
         }
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable long userId) {
+        List<Reservation> reservations = reservationService.getReservationsByUserId(userId);
+        return ResponseEntity.ok(reservations);
     }
 }

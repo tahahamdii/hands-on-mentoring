@@ -2,6 +2,9 @@ package smartcv.auth.model;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 import smartcv.auth.menu.Menu;
@@ -18,6 +21,8 @@ import java.util.List;
 @Setter
 @Getter
 @Table(name = "app_user")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -29,6 +34,7 @@ public class User {
     private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Reservation> reservations;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

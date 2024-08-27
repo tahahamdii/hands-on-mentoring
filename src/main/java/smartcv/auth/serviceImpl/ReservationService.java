@@ -10,6 +10,7 @@ import smartcv.auth.reservation.Reservation;
 import smartcv.auth.reservation.ReservationRepository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,5 +65,10 @@ public class ReservationService {
         }
 
         return false; // Reservation not found or cannot be canceled
+    }
+
+
+    public List<Reservation> getReservationsByUserId(long userId) {
+        return reservationRepository.findByUserId(userId);
     }
 }
