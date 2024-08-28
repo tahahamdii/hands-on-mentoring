@@ -22,21 +22,17 @@ public class ReservationController {
     public ResponseEntity<Reservation> makeReservation(
             @RequestParam long userId,
             @RequestParam int menuId,
-            @RequestParam String reservationDate) {
+            @RequestParam Date reservationDate) {
 
-        try {
-            // Convert the reservationDate string to Date
-            Date date = dateFormat.parse(reservationDate);
+        // Convert the reservationDate string to Date
+        // Date date = dateFormat.parse(reservationDate);
 
-            Reservation reservation = reservationService.makeReservation(userId, menuId, date);
+        Reservation reservation = reservationService.makeReservation(userId, menuId, reservationDate);
 
-            if (reservation != null) {
-                return ResponseEntity.ok(reservation);
-            } else {
-                return ResponseEntity.badRequest().build();  // Return 400 if user or menu not found
-            }
-        } catch (ParseException e) {
-            return ResponseEntity.badRequest().body(null);  // Return 400 if date parsing fails
+        if (reservation != null) {
+            return ResponseEntity.ok(reservation);
+        } else {
+            return ResponseEntity.badRequest().build();  // Return 400 if user or menu not found
         }
     }
 
@@ -91,7 +87,7 @@ public class ReservationController {
             reservationData.put("cancellationDeadline", reservation.getCancellationDeadline());
             reservationData.put("isCancelled", reservation.isCancelled());
             reservationData.put("menu", reservation.getMenu().getId()); // Return only menu ID
-            reservationData.put("user", reservation.getUser().getId()); // Return only user ID
+            reservationData.put("user", reservation.getUser().getFirstName()); // Return only user ID
 
             return reservationData;
         }).collect(Collectors.toList());
