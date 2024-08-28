@@ -57,6 +57,7 @@ public class SecurityConfig  {
                         .requestMatchers("/api/reservations/cancel").permitAll() // Require authentication for this endpoint
                         .requestMatchers("/api/reservations/user/**").permitAll()
                         .requestMatchers("/api/reservations/**").permitAll()
+                        .requestMatchers("/api/menus/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

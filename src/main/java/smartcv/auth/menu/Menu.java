@@ -38,7 +38,6 @@ public class Menu {
     private List<String> sandwiches;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;  // The user who created the menu
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
