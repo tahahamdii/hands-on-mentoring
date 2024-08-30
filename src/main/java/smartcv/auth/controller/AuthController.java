@@ -22,7 +22,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/rest/auth")
-@CrossOrigin("*")
 public class AuthController {
 
     private EmailRequest  emailRequest;
@@ -41,7 +40,6 @@ public class AuthController {
 
     @ResponseBody
     @RequestMapping(value = "/C", method = RequestMethod.POST)
-    @CrossOrigin("*")
     public ResponseEntity login(@RequestBody LoginReq loginReq) {
 
 
@@ -69,7 +67,6 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @CrossOrigin("*")
     public ResponseEntity registerUser(@RequestBody User user) {
         try {
             userDetailsService.createUser(user);
