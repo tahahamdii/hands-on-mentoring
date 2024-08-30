@@ -9,6 +9,7 @@ import smartcv.auth.serviceImpl.FeedbackService;
 import smartcv.auth.serviceImpl.MenuService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/feedbacks")
@@ -25,7 +26,7 @@ public class FeedbackController {
     ) {
         // Retrieve Menu entity using the provided ID
         Menu menu = menuRepo.findById(menuId)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu not found"));
+                .orElseThrow(() -> new NoSuchElementException("Menu not found"));
 
         // Create Feedback entity
         Feedback feedback = new Feedback();
