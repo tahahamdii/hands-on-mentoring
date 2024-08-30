@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
+import smartcv.auth.feedback.Feedback;
 import smartcv.auth.model.User;
 import smartcv.auth.reservation.Reservation;
 
@@ -36,6 +37,10 @@ public class Menu {
     @CollectionTable(name = "sandwiches", joinColumns = @JoinColumn(name = "menu_id"))
     @Column(name = "sandwich")
     private List<String> sandwiches;
+
+    @OneToMany
+    @Column(name = "feedback")
+    private List<Feedback> feedbacks;
 
     @ManyToOne
     private User user;  // The user who created the menu
