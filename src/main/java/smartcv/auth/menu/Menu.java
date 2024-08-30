@@ -38,9 +38,10 @@ public class Menu {
     @Column(name = "sandwich")
     private List<String> sandwiches;
 
-    @OneToMany
-    @Column(name = "feedback")
+    @CollectionTable
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Feedback> feedbacks;
+
 
     @ManyToOne
     private User user;  // The user who created the menu
