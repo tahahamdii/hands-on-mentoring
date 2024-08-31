@@ -55,4 +55,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 }
