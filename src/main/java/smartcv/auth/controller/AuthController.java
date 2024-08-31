@@ -8,6 +8,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import smartcv.auth.model.*;
@@ -48,11 +50,24 @@ public class AuthController {
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
             String email = authentication.getName();
 
-
             User user = new User(email, "");
             String token = jwtUtil.createToken(user);
             System.out.println("token generated: " + token);
-            LoginRes loginRes = new LoginRes(email, token);
+            // Fetch the user details from the database
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+            // Assuming you have a method to get User entity by email
+            User userdto = userDetailsService.findByEmail(email);
+
+            if (userdto == null) {
+                throw new UsernameNotFoundException("User not found with email: " + email);
+            }
+
+            // Generate token
+            System.out.println("token generated: " + token);
+
+            // Create LoginRes with user ID
+            LoginRes loginRes = new LoginRes(email, token, userdto.getId());
 
             return ResponseEntity.ok(loginRes);
 
