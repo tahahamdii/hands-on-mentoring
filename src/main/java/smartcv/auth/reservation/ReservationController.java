@@ -88,10 +88,44 @@ public class ReservationController {
             reservationData.put("isCancelled", reservation.isCancelled());
             reservationData.put("menu", reservation.getMenu().getId()); // Return only menu ID
             reservationData.put("user", reservation.getUser().getFirstName()); // Return only user ID
-
+            reservationData.put("email",reservation.getUser().getEmail());
             return reservationData;
         }).collect(Collectors.toList());
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/check-reservation")
+    public ResponseEntity<Map<String, Object>> checkReservationByEmailAndDate(@RequestParam String email) {
+        // Get today's date without time
+        Date today = new Date();
+        String todayString = dateFormat.format(today);
+
+        // Fetch reservations by email
+        List<Reservation> reservations = reservationService.getReservationsByEmail(email);
+
+        // Filter reservations for today's date
+        Optional<Reservation> todayReservation = reservations.stream()
+                .filter(reservation -> {
+                    String reservationDate = dateFormat.format(reservation.getReservationDate());
+                    return reservationDate.equals(todayString);
+                })
+                .findFirst();
+
+        if (todayReservation.isPresent()) {
+            Reservation reservation = todayReservation.get();
+            Map<String, Object> reservationData = new HashMap<>();
+            reservationData.put("id", reservation.getId());
+            reservationData.put("reservationDate", reservation.getReservationDate());
+            reservationData.put("menu", reservation.getMenu().getId()); // Return only menu ID
+            reservationData.put("user", reservation.getUser().getFirstName()); // Return user name or ID
+            reservationData.put("email", reservation.getUser().getEmail());
+
+            return ResponseEntity.ok(reservationData);
+        } else {
+            return ResponseEntity.notFound().build(); // Return 404 if no reservation found for today
+        }
+    }
+
+
 }
