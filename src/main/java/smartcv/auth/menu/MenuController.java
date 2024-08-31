@@ -29,10 +29,10 @@ public class MenuController {
             Map<String, Object> menuData = new HashMap<>();
             menuData.put("id", menu.getId());
             menuData.put("date", menu.getMenuDate());
-            menuData.put("entree", menu.getEntree());
-            menuData.put("platPrincipal", menu.getMainCourse());
-            menuData.put("garniture", menu.getGarnish());
-            menuData.put("dessert", menu.getDessert());
+            menuData.put("entree", menu.getEntrees());
+            menuData.put("platPrincipal", menu.getMainCourses());
+            menuData.put("garniture", menu.getGarnishes());
+            menuData.put("dessert", menu.getDesserts());
             menuData.put("sandwiches", menu.getSandwiches());
 
             return menuData;
