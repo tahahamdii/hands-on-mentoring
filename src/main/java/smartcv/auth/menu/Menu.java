@@ -19,6 +19,7 @@ import java.util.List;
 @Getter
 @Table(name = "menu")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,33 +28,20 @@ public class Menu {
     @Temporal(TemporalType.DATE)
     private Date menuDate;
 
-    @ElementCollection
-    @CollectionTable(name = "entrees", joinColumns = @JoinColumn(name = "menu_id"))
-    @Column(name = "entree")
-    private List<String> entrees;
-
-    @ElementCollection
-    @CollectionTable(name = "main_courses", joinColumns = @JoinColumn(name = "menu_id"))
-    @Column(name = "main_course")
-    private List<String> mainCourses;
-
-    @ElementCollection
-    @CollectionTable(name = "garnishes", joinColumns = @JoinColumn(name = "menu_id"))
-    @Column(name = "garnish")
-    private List<String> garnishes;
-
-    @ElementCollection
-    @CollectionTable(name = "desserts", joinColumns = @JoinColumn(name = "menu_id"))
-    @Column(name = "dessert")
-    private List<String> desserts;
+    private String entree;
+    private String mainCourse;  // plat principal
+    private String garnish;     // garniture
+    private String dessert;
 
     @ElementCollection
     @CollectionTable(name = "sandwiches", joinColumns = @JoinColumn(name = "menu_id"))
     @Column(name = "sandwich")
     private List<String> sandwiches;
 
+    @CollectionTable
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Feedback> feedbacks;
+
 
     @ManyToOne
     private User user;  // The user who created the menu

@@ -31,10 +31,10 @@ public class MenuService {
     public Menu updateMenu(int id, Menu menuDetails) {
         return menuRepository.findById(id).map(menu -> {
             menu.setMenuDate(menuDetails.getMenuDate());
-            menu.setEntrees(menuDetails.getEntrees());
-            menu.setMainCourses(menuDetails.getMainCourses());
-            menu.setGarnishes(menuDetails.getGarnishes());
-            menu.setDesserts(menuDetails.getDesserts());
+            menu.setEntree(menuDetails.getEntree());
+            menu.setMainCourse(menuDetails.getMainCourse());
+            menu.setGarnish(menuDetails.getGarnish());
+            menu.setDessert(menuDetails.getDessert());
             menu.setSandwiches(menuDetails.getSandwiches());
             // If needed, you can update the user or other fields
             return menuRepository.save(menu);
