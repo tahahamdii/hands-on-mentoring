@@ -108,7 +108,7 @@ public class ReservationController {
         if (user != null) {
             Date today = new Date();
             boolean hasReservationToday = user.getReservations().stream()
-                    .anyMatch(reservation -> isSameDay(reservation.getReservationDate(), today));
+                    .anyMatch(reservation -> isSameDay(reservation.getReservationDate(), today) && !reservation.isCancelled());
 
             if (hasReservationToday) {
                 return "Welcome!";
