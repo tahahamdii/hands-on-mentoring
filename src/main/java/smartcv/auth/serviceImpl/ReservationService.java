@@ -76,4 +76,9 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
+    //public List<Reservation> getReservationsByEmail(String email) {
+      //  return reservationRepository.findByUserEmail(email);
+    //}
+
+
 }

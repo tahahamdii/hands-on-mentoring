@@ -3,6 +3,8 @@ package smartcv.auth.reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import smartcv.auth.model.User;
+import smartcv.auth.repository.UserRepository;
 import smartcv.auth.serviceImpl.ReservationService;
 
 import java.text.ParseException;
@@ -13,6 +15,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/reservations")
 public class ReservationController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ReservationService reservationService;
@@ -88,10 +93,36 @@ public class ReservationController {
             reservationData.put("isCancelled", reservation.isCancelled());
             reservationData.put("menu", reservation.getMenu().getId()); // Return only menu ID
             reservationData.put("user", reservation.getUser().getFirstName()); // Return only user ID
-
+            reservationData.put("email",reservation.getUser().getEmail());
             return reservationData;
         }).collect(Collectors.toList());
 
         return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping("/checkReservation")
+    public String checkReservation(@RequestParam String matricule) {
+        User user = userRepository.findByMatricule(matricule);
+
+        if (user != null) {
+            Date today = new Date();
+            boolean hasReservationToday = user.getReservations().stream()
+                    .anyMatch(reservation -> isSameDay(reservation.getReservationDate(), today));
+
+            if (hasReservationToday) {
+                return "Welcome!";
+            } else {
+                return "You don't have a reservation.";
+            }
+        } else {
+            return "User not found.";
+        }
+    }
+    private boolean isSameDay(Date date1, Date date2) {
+        return date1.getYear() == date2.getYear() &&
+                date1.getMonth() == date2.getMonth() &&
+                date1.getDate() == date2.getDate();
+    }
+
 }
