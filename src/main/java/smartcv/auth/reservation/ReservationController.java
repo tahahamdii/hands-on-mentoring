@@ -26,13 +26,12 @@ public class ReservationController {
     @PostMapping("/make")
     public ResponseEntity<Reservation> makeReservation(
             @RequestParam long userId,
-            @RequestParam int menuId,
             @RequestParam Date reservationDate) {
 
         // Convert the reservationDate string to Date
         // Date date = dateFormat.parse(reservationDate);
 
-        Reservation reservation = reservationService.makeReservation(userId, menuId, reservationDate);
+        Reservation reservation = reservationService.makeReservation(userId, reservationDate);
 
         if (reservation != null) {
             return ResponseEntity.ok(reservation);
@@ -66,7 +65,7 @@ public class ReservationController {
                 reservationData.put("reservationDate", reservation.getReservationDate());
                 reservationData.put("cancellationDeadline", reservation.getCancellationDeadline());
                 reservationData.put("isCancelled", reservation.isCancelled());
-                reservationData.put("menu", reservation.getMenu().getId());  // Return only menu ID or other necessary fields
+       //         reservationData.put("menu", reservation.getMenu().getId());  // Return only menu ID or other necessary fields
 
                 reservationList.add(reservationData);
             }

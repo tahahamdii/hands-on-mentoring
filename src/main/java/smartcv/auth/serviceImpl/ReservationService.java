@@ -25,17 +25,15 @@ public class ReservationService {
     @Autowired
     private MenuRepository menuRepository;
 
-    public Reservation makeReservation(long userId, int menuId, Date reservationDate) {
+    public Reservation makeReservation(long userId, Date reservationDate) {
         Optional<User> userOpt = userRepository.findById(userId);
-        Optional<Menu> menuOpt = menuRepository.findById(menuId);
+       // Optional<Menu> menuOpt = menuRepository.findById(menuId);
 
-        if (userOpt.isPresent() && menuOpt.isPresent()) {
+        if (userOpt.isPresent()) {
             User user = userOpt.get();
-            Menu menu = menuOpt.get();
 
             Reservation reservation = new Reservation();
             reservation.setUser(user);
-            reservation.setMenu(menu);
             reservation.setReservationDate(reservationDate);
 
             // Set cancellation deadline to one day before the reservation date
