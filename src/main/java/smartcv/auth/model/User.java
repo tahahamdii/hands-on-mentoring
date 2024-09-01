@@ -31,6 +31,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String matricule;
+
     private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
