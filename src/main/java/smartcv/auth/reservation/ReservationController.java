@@ -1,5 +1,9 @@
 package smartcv.auth.reservation;
 
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.properties.TextAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,7 +11,14 @@ import smartcv.auth.model.User;
 import smartcv.auth.repository.UserRepository;
 import smartcv.auth.serviceImpl.ReservationService;
 
-import java.text.ParseException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
+
+import java.io.ByteArrayOutputStream;
+import java.util.Date;
+import java.util.Optional;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -122,6 +133,53 @@ public class ReservationController {
         return date1.getYear() == date2.getYear() &&
                 date1.getMonth() == date2.getMonth() &&
                 date1.getDate() == date2.getDate();
+    }
+
+    @GetMapping("/generate-pdf")
+    public ResponseEntity<byte[]> generatePDF(@RequestParam String matricule) {
+        // Fetch user based on matricule
+        User user = userRepository.findByMatricule(matricule);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Fetch user's name, today's date, and set price
+        String userName = user.getFirstName() + " " + user.getLastName();
+        Date today = new Date();
+        String price = "1,200 TND";
+
+        // Generate PDF
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            PdfWriter writer = new PdfWriter(out);
+            com.itextpdf.kernel.pdf.PdfDocument pdf = new com.itextpdf.kernel.pdf.PdfDocument(writer);
+            Document document = new Document(pdf);
+
+            // Add content to the PDF
+            document.add(new Paragraph("Reservation Details")
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontSize(18));
+            document.add(new Paragraph("\n"));
+            document.add(new Paragraph("Name: " + userName)
+                    .setFontSize(12));
+            document.add(new Paragraph("Date: " + today.toString())
+                    .setFontSize(12));
+            document.add(new Paragraph("Price: " + price)
+                    .setFontSize(12));
+
+            document.close();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+
+        // Prepare PDF for download
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("filename", "reservation.pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(out.toByteArray());
     }
 
 }

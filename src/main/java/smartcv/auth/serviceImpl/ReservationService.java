@@ -9,6 +9,7 @@ import smartcv.auth.repository.UserRepository;
 import smartcv.auth.reservation.Reservation;
 import smartcv.auth.reservation.ReservationRepository;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,15 @@ public class ReservationService {
     private MenuRepository menuRepository;
 
     public Reservation makeReservation(long userId, Date reservationDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        Date oneMonthFromNow = calendar.getTime();
+
+        // Check if the reservation date is within one month
+        if (reservationDate.after(oneMonthFromNow)) {
+            System.out.println("Reservation date cannot be more than a month from now.");
+            return null;  // Or throw an exception if that's more appropriate for your use case
+        }
         Optional<User> userOpt = userRepository.findById(userId);
        // Optional<Menu> menuOpt = menuRepository.findById(menuId);
 
