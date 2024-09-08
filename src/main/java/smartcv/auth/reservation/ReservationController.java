@@ -101,7 +101,6 @@ public class ReservationController {
             reservationData.put("reservationDate", reservation.getReservationDate());
             reservationData.put("cancellationDeadline", reservation.getCancellationDeadline());
             reservationData.put("isCancelled", reservation.isCancelled());
-            reservationData.put("menu", reservation.getMenu().getId()); // Return only menu ID
             reservationData.put("user", reservation.getUser().getFirstName()); // Return only user ID
             reservationData.put("email",reservation.getUser().getEmail());
             return reservationData;
